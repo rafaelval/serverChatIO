@@ -17,8 +17,14 @@ app.use(cors());
 io.on('connection', (socket) => {
   console.log('Nuevo usuario conectado');
 
+  // Escuchar mensajes generales
   socket.on('message', (data) => {
     io.emit('messageResponse', data); // Emitir el mensaje a todos los clientes
+  });
+
+  // Escuchar mensajes privados
+  socket.on('privateMessage', ({ to, message }) => {
+    socket.to(to).emit('privateMessageResponse', { message, from: socket.id });
   });
 
   socket.on('disconnect', () => {
